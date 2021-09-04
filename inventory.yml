@@ -1,6 +1,0 @@
-its_server:
-  hosts: ds9its11
-  vars:
-    ansible_user: vagrant
-    ansible_password: vagrant
-    ansible_ssh_private_key_file: ~/.ssh/private_key
