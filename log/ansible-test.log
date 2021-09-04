@@ -1,0 +1,70 @@
+[vagrant@ds9its11 ansible]$ ansible all -m ping -i ./inventory.yml
+ds9its11 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/libexec/platform-python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+
+[vagrant@ds9its11 ansible]$ ansible-playbook -i ./inventory.yml ./redmine.yml --syntax-check
+
+playbook: ./redmine.yml
+[vagrant@ds9its11 ansible]$ 
+
+
+
+[vagrant@ds9its11 ansible]$ ansible-playbook -i ./inventory.yml ./redmine.yml --list-tasks
+
+playbook: ./redmine.yml
+
+  play #1 (ds9its11): ds9its11	TAGS: []
+    tasks:
+      Mkdir red-p2	TAGS: []
+      Copy MySQL conf	TAGS: []
+      Copy Plugins	TAGS: []
+      Podman Pod Create	TAGS: []
+      Podman MySQL Contaner Run	TAGS: []
+      Podman Redmine Contaner Run	TAGS: []
+[vagrant@ds9its11 ansible]$ 
+
+
+[vagrant@ds9its11 ansible]$ ansible-playbook -i ./inventory.yml ./redmine.yml --check
+
+PLAY [ds9its11] *********************************************************************
+
+TASK [Gathering Facts] **************************************************************
+ok: [ds9its11]
+
+TASK [Mkdir red-p2] *****************************************************************
+ok: [ds9its11] => (item=mysql/data)
+ok: [ds9its11] => (item=mysql/conf/conf.d)
+ok: [ds9its11] => (item=mysql/logs)
+ok: [ds9its11] => (item=backup/db)
+ok: [ds9its11] => (item=backup/files)
+ok: [ds9its11] => (item=redmine/files)
+ok: [ds9its11] => (item=redmine/plugins)
+ok: [ds9its11] => (item=redmine/log)
+ok: [ds9its11] => (item=redmine/public/themes)
+
+TASK [Copy MySQL conf] **************************************************************
+ok: [ds9its11]
+
+TASK [Copy Plugins] *****************************************************************
+ok: [ds9its11]
+
+TASK [Podman Pod Create] ************************************************************
+skipping: [ds9its11]
+
+TASK [Podman MySQL Contaner Run] ****************************************************
+ok: [ds9its11]
+
+TASK [Podman Redmine Contaner Run] **************************************************
+ok: [ds9its11]
+
+PLAY RECAP **************************************************************************
+ds9its11                   : ok=6    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+
+[vagrant@ds9its11 ansible]$ 
+
