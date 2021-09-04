@@ -1,0 +1,12 @@
+
+- hosts: ds9its11
+  become: true
+  # become_method: sudo
+  # enviroment:
+
+  tasks:
+          - name: touch
+            shell: |
+                    touch /tmp/ansible.log
+                    #           rm -fr /tmp/*.log
+

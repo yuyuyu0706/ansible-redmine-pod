@@ -1,0 +1,26 @@
+
+- hosts: ds9its11
+  become: true
+  become_method: sudo
+
+  vars:
+    pod_path: /data/red-p2/
+
+  tasks:
+    - name: checklists
+      unarchive:
+        src: /data/red-p2/redmine/plugins/redmine_checklists-3_1_19-light.zip
+        dest: /data/red-p2/redmine/plugins/
+
+    - name: Tags
+      shell: |
+        git clone https://github.com/ixti/redmine_tags.git
+      args:
+        chdir: "{{ pod_path }}/redmine/plugins/"
+
+    - name: Redmine Plugins install
+      shell: |
+        podman exec red-2 bundle install --jobs=4 --without development test && \
+        podman exec red-2 bundle exec rake redmine:plugins:migrate RAILS_ENV=production && \
+        podman restart red-2
+

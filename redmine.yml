@@ -1,0 +1,72 @@
+
+- hosts: ds9its11
+  become: true
+  become_method: sudo
+
+  vars:
+    pod_path: /data/red-p2/
+
+  tasks:
+    - name: Mkdir red-p2
+      file: state=directory path={{ pod_path }}{{ item }}
+      with_items:
+        - mysql/data
+        - mysql/conf/conf.d
+        - mysql/logs
+        - backup/db
+        - backup/files
+        - redmine/files
+        - redmine/plugins
+        - redmine/log
+        - redmine/public/themes
+
+    - name: Copy MySQL conf
+      copy:
+        src: "/data/backup/conf/mysql/conf.d/multibyte.cnf"
+        dest: "{{ pod_path }}/mysql/conf/conf.d/"
+
+    - name: Copy Plugins
+      copy:
+        src: "/data/backup/plugins/redmine_checklists-3_1_19-light.zip"
+        dest: "{{ pod_path }}/redmine/plugins/"
+
+    - name: Podman Pod Create
+      containers.podman.podman_pod:
+        name: red-p2
+        state: created
+        ports:
+          - 8082:80
+          - 3010:3000
+          - 3316:3306
+
+    - name: Podman MySQL Contaner Run
+      containers.podman.podman_container:
+        name: db-red-2
+        state: started
+        image: docker.io/library/mysql:5.7
+        pod: red-p2
+        env:
+          MYSQL_DATABASE: "redmine"
+          MYSQL_ROOT_PASSWORD: "P@ss"
+          MYSQL_USER: "user"
+          MYSQL_PASSWORD: "secret"
+        volume:
+          - "{{ pod_path }}/mysql/data:/var/lib/mysql"
+          - "{{ pod_path }}/mysql/conf/conf.d:/etc/mysql/conf.d"
+          - "{{ pod_path }}/backup/db:/backup/db"
+
+    - name: Podman Redmine Contaner Run
+      containers.podman.podman_container:
+        name: red-2
+        state: started
+        image: docker.io/library/redmine:4.2
+        pod: red-p2
+        env:
+          REDMINE_DB_MYSQL: "127.0.0.1"
+          REDMINE_DB_USERNAME: "user"
+          REDMINE_DB_PASSWORD: "secret"
+        volume:
+          - "{{ pod_path }}/redmine/files:/usr/src/redmine/files"
+          - "{{ pod_path }}/redmine/plugins:/usr/src/redmine/plugins"
+          - "{{ pod_path }}/redmine/log:/usr/src/redmine/log"
+

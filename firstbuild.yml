@@ -1,0 +1,16 @@
+
+- hosts: ds9its11
+  become: true
+  become_method: sudo
+
+  tasks:
+    - name: podman install
+      dnf:
+        name: podman
+        state: present
+
+    - name: git install
+      dnf: 
+        name: git
+        state: present
+
