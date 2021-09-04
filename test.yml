@@ -8,5 +8,5 @@
           - name: touch
             shell: |
                     touch /tmp/ansible.log
-                    #           rm -fr /tmp/*.log
+                    # rm -fr /tmp/*.log
 
