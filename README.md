@@ -17,6 +17,8 @@ its_server:
 ```
 
 ## Exec Test Ansible
+[sample.log](https://github.com/yuyuyu0706/ansible-redmine-pod/blob/main/log/ansible-test.log)
+
 ```
 ansible all -m ping -i ./inventory.yml
 ansible-playbook -i ./inventory.yml ./redmine.yml --syntax-check
