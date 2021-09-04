@@ -22,7 +22,7 @@ its_server:
 ```
 ansible all -m ping -i ./inventory.yml
 ansible-playbook -i ./inventory.yml ./redmine.yml --syntax-check
-ansible-playbook -i ./inventory.yml ./redmine.yml --list-task
+ansible-playbook -i ./inventory.yml ./redmine.yml --list-tasks
 ansible-playbook -i ./inventory.yml ./redmine.yml --check  # DryRun
 ```
 
