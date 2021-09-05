@@ -55,6 +55,12 @@
           - "{{ pod_path }}/mysql/conf/conf.d:/etc/mysql/conf.d"
           - "{{ pod_path }}/backup/db:/backup/db"
 
+    - name: Wait 60 seconds for port 3316
+      wait_for:
+        timeout: 60
+        port: 3316
+        host: 0.0.0.0
+
     - name: Podman Redmine Contaner Run
       containers.podman.podman_container:
         name: red-2
