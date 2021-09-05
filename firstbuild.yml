@@ -4,13 +4,19 @@
   become_method: sudo
 
   tasks:
+    - name: git install
+      dnf: 
+        name: git
+        state: present
+
     - name: podman install
       dnf:
         name: podman
         state: present
 
-    - name: git install
-      dnf: 
-        name: git
-        state: present
+    - name: podman module install
+      shell: |
+        mkdir -p ~/.ansible/collections/ansible_collections/containers
+        git clone https://github.com/containers/ansible-podman-collections.git ~/.ansible/collections/ansible_collections/containers/podman
+      sudo: no
 
