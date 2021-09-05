@@ -14,9 +14,13 @@
         name: podman
         state: present
 
+    - name: podman module mkdir
+      file: 
+        state: directory
+        path: ~/.ansible/collections/ansible_collections/containers
+      become: no
+
     - name: podman module install
       shell: |
-        mkdir -p ~/.ansible/collections/ansible_collections/containers
         git clone https://github.com/containers/ansible-podman-collections.git ~/.ansible/collections/ansible_collections/containers/podman
-      sudo: no
-
+      become: no
