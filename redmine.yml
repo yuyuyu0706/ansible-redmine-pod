@@ -4,10 +4,10 @@
   become_method: sudo
 
   vars:
-    pod_path: /data/red-p2/
+    pod_path: /data/red-pod/
 
   tasks:
-    - name: Mkdir red-p2
+    - name: mkdir red-pod
       file: state=directory path={{ pod_path }}{{ item }}
       with_items:
         - mysql/data
@@ -32,19 +32,19 @@
     
     - name: Podman Pod Create
       containers.podman.podman_pod:
-        name: red-p2
+        name: red-pod
         state: created
         ports:
-          - 8082:80
+          - 8080:80
           - 3010:3000
           - 3316:3306
 
     - name: Podman MySQL Contaner Run
       containers.podman.podman_container:
-        name: db-red-2
+        name: db-redmine
         state: started
         image: docker.io/library/mysql:5.7
-        pod: red-p2
+        pod: red-pod
         env:
           MYSQL_DATABASE: "redmine"
           MYSQL_ROOT_PASSWORD: "P@ss"
@@ -63,10 +63,10 @@
 
     - name: Podman Redmine Contaner Run
       containers.podman.podman_container:
-        name: red-2
+        name: redmine
         state: started
         image: docker.io/library/redmine:4.2
-        pod: red-p2
+        pod: red-pod
         env:
           REDMINE_DB_MYSQL: "127.0.0.1"
           REDMINE_DB_USERNAME: "user"
