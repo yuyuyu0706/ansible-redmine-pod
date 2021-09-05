@@ -22,14 +22,14 @@
 
     - name: Copy MySQL conf
       copy:
-        src: "/data/backup/conf/mysql/conf.d/multibyte.cnf"
+        src: "./conf/multibyte.cnf"
         dest: "{{ pod_path }}/mysql/conf/conf.d/"
 
-    - name: Copy Plugins
-      copy:
-        src: "/data/backup/plugins/redmine_checklists-3_1_19-light.zip"
-        dest: "{{ pod_path }}/redmine/plugins/"
-
+    # - name: Copy Plugins
+    #  copy:
+    #    src: "/data/backup/plugins/redmine_checklists-3_1_19-light.zip"
+    #    dest: "{{ pod_path }}/redmine/plugins/"
+    
     - name: Podman Pod Create
       containers.podman.podman_pod:
         name: red-p2
