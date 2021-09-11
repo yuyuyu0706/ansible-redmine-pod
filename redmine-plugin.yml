@@ -5,26 +5,35 @@
 
   vars:
     pod_path: /data/red-pod/
-    DL_URL: https://drive.google.com/uc?export=download&id=xxxxxxxxxxx
-    CK_SUM: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    DL_URL: https://drive.google.com/uc?export=download&id=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    CK_SUM: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     redmine_name: redmine
 
   tasks:
-    - name: Download Plugins
+    - name: Cleanup
+      file:
+        path: "{{ pod_path }}redmine/plugins/"
+        state: absent
+
+    - name: Recriate Directory
+      file: state=directory path={{ pod_path }}/redmine/plugins
+
+    - name: checklist Download
       get_url:
         url: "{{ DL_URL }}"
         sha256sum: "{{ CK_SUM }}"
         force: True
-        dest: "{{ pod_path }}redmine/plugins/redmine_checklists-3_1_19-light.zip"
+        dest: "{{ pod_path }}backup/plugins/redmine_checklists-3_1_19-light.zip"
 
-    - name: checklists
+    - name: checklists unzip
       unarchive:
-        src: "{{ pod_path }}redmine/plugins/redmine_checklists-3_1_19-light.zip"
+        src: "{{ pod_path }}backup/plugins/redmine_checklists-3_1_19-light.zip"
         dest: "{{ pod_path }}redmine/plugins/"
 
-    - name: Tags
+    - name: Tags & Hide Sidebar
       shell: |
-        git clone https://github.com/ixti/redmine_tags.git
+        git clone https://github.com/ixti/redmine_tags.git && \
+        git clone https://gitlab.com/bdemirkir/sidebar_hide.git
       args:
         chdir: "{{ pod_path }}/redmine/plugins/"
 
