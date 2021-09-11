@@ -1,17 +1,26 @@
 
-- hosts: ds9its11
+- hosts: ds9temp11
   become: true
   become_method: sudo
 
   vars:
     pod_path: /data/red-pod/
+    DL_URL: https://drive.google.com/uc?export=download&id=xxxxxxxxxxx
+    CK_SUM: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     redmine_name: redmine
 
   tasks:
+    - name: Download Plugins
+      get_url:
+        url: "{{ DL_URL }}"
+        sha256sum: "{{ CK_SUM }}"
+        force: True
+        dest: "{{ pod_path }}redmine/plugins/redmine_checklists-3_1_19-light.zip"
+
     - name: checklists
       unarchive:
-        src: "{{ pod_path }}/redmine/plugins/redmine_checklists-3_1_19-light.zip"
-        dest: "{{ pod_path }}/redmine/plugins/"
+        src: "{{ pod_path }}redmine/plugins/redmine_checklists-3_1_19-light.zip"
+        dest: "{{ pod_path }}redmine/plugins/"
 
     - name: Tags
       shell: |
