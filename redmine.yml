@@ -15,6 +15,7 @@
         - mysql/logs
         - backup/db
         - backup/files
+        - backup/plugins
         - redmine/files
         - redmine/plugins
         - redmine/log
@@ -25,11 +26,6 @@
         src: "./conf/multibyte.cnf"
         dest: "{{ pod_path }}/mysql/conf/conf.d/"
 
-    # - name: Copy Plugins
-    #  copy:
-    #    src: "/data/backup/plugins/redmine_checklists-3_1_19-light.zip"
-    #    dest: "{{ pod_path }}/redmine/plugins/"
-    
     - name: Podman Pod Create
       containers.podman.podman_pod:
         name: red-pod
@@ -65,7 +61,7 @@
       containers.podman.podman_container:
         name: redmine
         state: started
-        image: docker.io/library/redmine:4.2
+        image: docker.io/library/redmine:4-passenger
         pod: red-pod
         env:
           REDMINE_DB_MYSQL: "127.0.0.1"
@@ -75,4 +71,5 @@
           - "{{ pod_path }}/redmine/files:/usr/src/redmine/files"
           - "{{ pod_path }}/redmine/plugins:/usr/src/redmine/plugins"
           - "{{ pod_path }}/redmine/log:/usr/src/redmine/log"
+          - "{{ pod_path }}/redmine/public/themes:/usr/src/redmine/public/themes"
 

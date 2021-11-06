@@ -5,37 +5,43 @@
 
   vars:
     pod_path: /data/red-pod/
-    DL_URL: https://drive.google.com/uc?export=download&id=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    CK_SUM: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     redmine_name: redmine
 
   tasks:
-    - name: Cleanup
-      file:
-        path: "{{ pod_path }}redmine/plugins/"
-        state: absent
-
-    - name: Recriate Directory
-      file: state=directory path={{ pod_path }}/redmine/plugins
-
-    - name: checklist Download
-      get_url:
-        url: "{{ DL_URL }}"
-        sha256sum: "{{ CK_SUM }}"
-        force: True
-        dest: "{{ pod_path }}backup/plugins/redmine_checklists-3_1_19-light.zip"
-
     - name: checklists unzip
       unarchive:
         src: "{{ pod_path }}backup/plugins/redmine_checklists-3_1_19-light.zip"
         dest: "{{ pod_path }}redmine/plugins/"
 
-    - name: Tags & Hide Sidebar
-      shell: |
-        git clone https://github.com/ixti/redmine_tags.git && \
-        git clone https://gitlab.com/bdemirkir/sidebar_hide.git
-      args:
-        chdir: "{{ pod_path }}/redmine/plugins/"
+    - name: People plugin unzip
+      unarchive:
+        src: "{{ pod_path }}backup/plugins/redmine_people-1_6_1-light.zip"
+        dest: "{{ pod_path }}redmine/plugins/"
+
+    - name: Tags
+      ansible.builtin.git:
+        repo: https://github.com/ixti/redmine_tags.git
+        dest: "{{ pod_path }}/redmine/plugins/redmine_tags"
+
+    - name: Hide Sidebar
+      ansible.builtin.git:
+        repo: https://gitlab.com/bdemirkir/sidebar_hide.git
+        dest: "{{ pod_path }}/redmine/plugins/sidebar_hide"
+
+    - name: issue template
+      ansible.builtin.git:
+        repo: https://github.com/agileware-jp/redmine_issue_templates.git
+        dest: "{{ pod_path }}/redmine/plugins/redmine_issue_templates"
+
+    - name: view customize plugin
+      ansible.builtin.git:
+        repo: https://github.com/onozaty/redmine-view-customize.git
+        dest: "{{ pod_path }}/redmine/plugins/view_customize"
+
+    - name: persist wiki format plugin
+      ansible.builtin.git:
+        repo: https://github.com/pinzolo/redmine_persist_wfmt.git
+        dest: "{{ pod_path }}/redmine/plugins/redmine_persist_wfmt"
 
     - name: Redmine Plugins install
       shell: |
