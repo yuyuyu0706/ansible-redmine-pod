@@ -20,6 +20,7 @@
         - redmine/plugins
         - redmine/log
         - redmine/public/themes
+        - redmine/git
 
     - name: Copy MySQL conf
       copy:
@@ -72,4 +73,5 @@
           - "{{ pod_path }}/redmine/plugins:/usr/src/redmine/plugins"
           - "{{ pod_path }}/redmine/log:/usr/src/redmine/log"
           - "{{ pod_path }}/redmine/public/themes:/usr/src/redmine/public/themes"
+          - "{{ pod_path }}/redmine/git:/usr/src/redmine/git"
 
