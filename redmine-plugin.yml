@@ -58,6 +58,11 @@
         repo: https://github.com/cat-in-136/redmine_hearts.git
         dest: "{{ pod_path }}/redmine/plugins/redmine_hearts"
 
+    - name: theme changer
+      ansible.builtin.git:
+        repo: https://github.com/haru/redmine_theme_changer.git
+        dest: "{{ pod_path }}/redmine/plugins/redmine_theme_changer"
+
     - name: Redmine Plugins install
       shell: |
         podman exec {{ redmine_name }} bundle install --jobs=4 --without development test && \
