@@ -4,10 +4,18 @@
   become_method: sudo
 
   vars:
-    pod_path: /data/red-pod/
+    env_id: 2
+    pod_name: "red-pod{{ env_id }}"
+    pod_path: /data/{{ pod_name }}/
+    ht_name: httpd{{ env_id }}
+    rd_name: redmine{{ env_id }}
+    ms_name: mysql{{ env_id }}
+    ht_port: 8280
+    rd_port: 3020
+    ms_port: 3326
 
   tasks:
-    - name: mkdir red-pod
+    - name: mkdir {{ pod_name }}
       file: state=directory path={{ pod_path }}{{ item }}
       with_items:
         - mysql/data
@@ -29,19 +37,22 @@
 
     - name: Podman Pod Create
       containers.podman.podman_pod:
-        name: red-pod
+        name: "{{ pod_name }}"
         state: created
         ports:
-          - 8080:80
-          - 3010:3000
-          - 3316:3306
+          - "{{ ht_port }}:80"
+          - "{{ rd_port }}:3000"
+          - "{{ ms_port }}:3306"
+          #- 8080:80
+          #- 3010:3000
+          #- 3316:3306
 
     - name: Podman MySQL Contaner Run
       containers.podman.podman_container:
-        name: db-redmine
+        name: "{{ ms_name }}"
         state: started
         image: docker.io/library/mysql:5.7
-        pod: red-pod
+        pod: "{{ pod_name }}"
         env:
           MYSQL_DATABASE: "redmine"
           MYSQL_ROOT_PASSWORD: "P@ss"
@@ -52,18 +63,18 @@
           - "{{ pod_path }}/mysql/conf/conf.d:/etc/mysql/conf.d"
           - "{{ pod_path }}/backup/db:/backup/db"
 
-    - name: Wait 60 seconds for port 3316
+    - name: Wait 60 seconds for port {{ ms_port }}
       wait_for:
         timeout: 60
-        port: 3316
+        port: "{{ ms_port }}"
         host: 0.0.0.0
 
     - name: Podman Redmine Contaner Run
       containers.podman.podman_container:
-        name: redmine
+        name: "{{ rd_name }}"
         state: started
         image: docker.io/library/redmine:4-passenger
-        pod: red-pod
+        pod: "{{ pod_name }}"
         env:
           REDMINE_DB_MYSQL: "127.0.0.1"
           REDMINE_DB_USERNAME: "user"
