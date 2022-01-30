@@ -13,3 +13,24 @@
         repo: https://github.com/farend/redmine_theme_farend_bleuclair.git
         dest: "{{ pod_path }}/redmine/public/themes/bleuclair"
 
+    - name: gitmike
+      ansible.builtin.git:
+        repo: https://github.com/makotokw/redmine-theme-gitmike.git
+        dest: "{{ pod_path }}/redmine/public/themes/gitmike"
+
+    - name: PurpleMine2
+      ansible.builtin.git:
+        repo: https://github.com/mrliptontea/PurpleMine2.git
+        dest: "{{ pod_path }}/redmine/public/themes/PurpleMine2"
+
+    - name: minimalflat2
+      ansible.builtin.git:
+        repo: https://github.com/akabekobeko/redmine-theme-minimalflat2.git
+        dest: "{{ pod_path }}/redmine/public/themes/minimalflat2"
+
+    - name: kodomo
+      ansible.builtin.git:
+        repo: https://github.com/akiko-pusu/redmine_theme_kodomo.git
+        dest: "{{ pod_path }}/redmine/public/themes/kodomo"
+
+
