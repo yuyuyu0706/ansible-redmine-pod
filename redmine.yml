@@ -13,6 +13,8 @@
     ht_port: 8280
     rd_port: 3020
     ms_port: 3326
+    rd_image: docker.io/library/redmine:4-passenger
+    ms_image: docker.io/library/mysql:5.7
 
   tasks:
     - name: mkdir {{ pod_name }}
@@ -51,7 +53,7 @@
       containers.podman.podman_container:
         name: "{{ ms_name }}"
         state: started
-        image: docker.io/library/mysql:5.7
+        image: "{{ ms_image }}"
         pod: "{{ pod_name }}"
         env:
           MYSQL_DATABASE: "redmine"
@@ -73,7 +75,7 @@
       containers.podman.podman_container:
         name: "{{ rd_name }}"
         state: started
-        image: docker.io/library/redmine:4-passenger
+        image: "{{ rd_image }}"
         pod: "{{ pod_name }}"
         env:
           REDMINE_DB_MYSQL: "127.0.0.1"

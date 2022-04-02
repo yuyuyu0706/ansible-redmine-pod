@@ -30,6 +30,12 @@ ansible-playbook -i ./inventory.yml ./firstbuild.yml --check
 ansible-playbook -i ./inventory.yml ./firstbuild.yml
 ```
 
+## Pull Docker Images
+```
+podman pull docker.io/library/mysql:5.7
+podman pull docker.io/library/redmine:4-passenger
+```
+
 ## Exec Redmine Ansible
 ```
 ansible-playbook -i ./inventory.yml ./redmine.yml --syntax-check
