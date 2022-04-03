@@ -4,17 +4,17 @@
   become_method: sudo
 
   vars:
-    env_id: 2
+    # env_id: 2
     pod_name: "red-pod{{ env_id }}"
     pod_path: /data/{{ pod_name }}/
     ht_name: httpd{{ env_id }}
     rd_name: redmine{{ env_id }}
     ms_name: mysql{{ env_id }}
-    ht_port: 8280
-    rd_port: 3020
-    ms_port: 3326
-    rd_image: docker.io/library/redmine:5.0.0-bullseye
-    # rd_image: docker.io/library/redmine:4-passenger
+    ht_port: "8{{ env_id }}80"
+    rd_port: "30{{ env_id }}0"
+    ms_port: "33{{ env_id }}6"
+    # rd_image: docker.io/library/redmine:5.0.0-bullseye
+    rd_image: docker.io/library/redmine:4-passenger
     ms_image: docker.io/library/mysql:5.7
 
   tasks:
