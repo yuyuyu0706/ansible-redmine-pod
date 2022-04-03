@@ -13,7 +13,8 @@
     ht_port: 8280
     rd_port: 3020
     ms_port: 3326
-    rd_image: docker.io/library/redmine:4-passenger
+    rd_image: docker.io/library/redmine:5.0.0-bullseye
+    # rd_image: docker.io/library/redmine:4-passenger
     ms_image: docker.io/library/mysql:5.7
 
   tasks:
@@ -26,6 +27,7 @@
         - backup/db
         - backup/files
         - backup/plugins
+        - backup/theme
         - redmine/files
         - redmine/plugins
         - redmine/log

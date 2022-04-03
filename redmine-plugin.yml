@@ -4,74 +4,19 @@
   become_method: sudo
 
   vars:
-    pod_path: /data/red-pod/
-    redmine_name: redmine
+    pod_path: /data/red-pod2/
+    redmine_name: redmine2
 
   tasks:
     - name: checklists confirm
-      stat: path="{{ pod_path }}backup/plugins/redmine_checklists-3_1_19-light.zip"
+      stat: path="{{ pod_path }}backup/plugins/redmine_checklists-3_1_21-light.zip"
       register: result1
 
     - name: checklists unzip
       unarchive:
-        src: "{{ pod_path }}backup/plugins/redmine_checklists-3_1_19-light.zip"
+        src: "{{ pod_path }}backup/plugins/redmine_checklists-3_1_21-light.zip"
         dest: "{{ pod_path }}redmine/plugins/"
       when: result1.stat.exists
-
-#    - name: People plugin confirm
-#      stat: path="{{ pod_path }}backup/plugins/redmine_people-1_6_1-light.zip"
-#      register: result2
-
-#    - name: People plugin unzip
-#      unarchive:
-#        src: "{{ pod_path }}backup/plugins/redmine_people-1_6_1-light.zip"
-#        dest: "{{ pod_path }}redmine/plugins/"
-#      when: result2.stat.exists
-
-    - name: Tags
-      ansible.builtin.git:
-        repo: https://github.com/ixti/redmine_tags.git
-        dest: "{{ pod_path }}/redmine/plugins/redmine_tags"
-
-    - name: Hide Sidebar
-      ansible.builtin.git:
-        repo: https://gitlab.com/bdemirkir/sidebar_hide.git
-        dest: "{{ pod_path }}/redmine/plugins/sidebar_hide"
-
-#    - name: issue template
-#      ansible.builtin.git:
-#        repo: https://github.com/agileware-jp/redmine_issue_templates.git
-#        dest: "{{ pod_path }}/redmine/plugins/redmine_issue_templates"
-
-#    - name: view customize plugin
-#      ansible.builtin.git:
-#        repo: https://github.com/onozaty/redmine-view-customize.git
-#        dest: "{{ pod_path }}/redmine/plugins/view_customize"
-
-    - name: persist wiki format plugin
-      ansible.builtin.git:
-        repo: https://github.com/pinzolo/redmine_persist_wfmt.git
-        dest: "{{ pod_path }}/redmine/plugins/redmine_persist_wfmt"
-
-    - name: hearts plugin
-      ansible.builtin.git:
-        repo: https://github.com/cat-in-136/redmine_hearts.git
-        dest: "{{ pod_path }}/redmine/plugins/redmine_hearts"
-
-    - name: searchable_selectbox
-      ansible.builtin.git:
-        repo: https://github.com/farend/redmine_searchable_selectbox.git
-        dest: "{{ pod_path }}/redmine/plugins/redmine_searchable_selectbox"
-
-    - name: issue_assign_notice
-      ansible.builtin.git:
-        repo: https://github.com/onozaty/redmine_issue_assign_notice.git
-        dest: "{{ pod_path }}/redmine/plugins/redmine_issue_assign_notice"
-
-    - name: theme changer
-      ansible.builtin.git:
-        repo: https://github.com/haru/redmine_theme_changer.git
-        dest: "{{ pod_path }}/redmine/plugins/redmine_theme_changer"
 
     - name: Redmine Plugins install
       shell: |
