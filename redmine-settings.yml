@@ -1,0 +1,16 @@
+
+- hosts: ds9its11
+  become: true
+  become_method: sudo
+
+  vars:
+    pod_path: /data/red-pod{{ env_id }}/
+    rd_name: redmine{{ env_id }}
+    ms_name: mysql{{ env_id }}
+
+  tasks:
+    - name: Redmine Setting
+      shell: podman exec {{ ms_name }} conf/setting.sql
+
+
+
