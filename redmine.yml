@@ -10,12 +10,14 @@
     ht_name: httpd{{ env_id }}
     rd_name: redmine{{ env_id }}
     ms_name: mysql{{ env_id }}
+    mm_name: memchached{{ env_id }}
     ht_port: "8{{ env_id }}80"
     rd_port: "30{{ env_id }}0"
     ms_port: "33{{ env_id }}6"
     # rd_image: docker.io/library/redmine:5.0.0-bullseye
     rd_image: docker.io/library/redmine:4-passenger
     ms_image: docker.io/library/mysql:5.7
+    mm_image: docker.io/library/memcached:1.6.15-bullseye
 
   tasks:
     - name: mkdir {{ pod_name }}
@@ -29,6 +31,7 @@
         - backup/plugins
         - backup/theme
         - redmine/files
+        - redmine/conf
         - redmine/plugins
         - redmine/log
         - redmine/public/themes
@@ -38,6 +41,21 @@
       copy:
         src: "./conf/multibyte.cnf"
         dest: "{{ pod_path }}/mysql/conf/conf.d/"
+
+    - name: Copy Redmine conf additional_environment.rb
+      copy:
+        src: "./conf/additional_environment.rb"
+        dest: "{{ pod_path }}/redmine/conf/"
+
+    - name: Copy Redmine conf configuration.yml
+      copy:
+        src: "./conf/configuration.yml"
+        dest: "{{ pod_path }}/redmine/conf/"
+
+    - name: Copy Redmine conf Gemfile.local
+      copy:
+        src: "./conf/Gemfile.local"
+        dest: "{{ pod_path }}/redmine/conf/"
 
     - name: Podman Pod Create
       containers.podman.podman_pod:
@@ -67,6 +85,13 @@
           - "{{ pod_path }}/mysql/conf/conf.d:/etc/mysql/conf.d"
           - "{{ pod_path }}/backup/db:/backup/db"
 
+    - name: Podman Memchaced Contaner Run
+      containers.podman.podman_container:
+        name: "{{ mm_name }}"
+        state: started
+        image: "{{ mm_image }}"
+        pod: "{{ pod_name }}"
+
     - name: Wait 60 seconds for port {{ ms_port }}
       wait_for:
         timeout: 60
@@ -85,6 +110,9 @@
           REDMINE_DB_PASSWORD: "secret"
         volume:
           - "{{ pod_path }}/redmine/files:/usr/src/redmine/files"
+          - "{{ pod_path }}/redmine/conf/additional_environment.rb:/usr/src/redmine/config/additional_environment.rb"
+          - "{{ pod_path }}/redmine/conf/configuration.yml:/usr/src/redmine/config/configuration.yml"
+          - "{{ pod_path }}/redmine/conf/Gemfile.local:/usr/src/redmine/Gemfile.local"
           - "{{ pod_path }}/redmine/plugins:/usr/src/redmine/plugins"
           - "{{ pod_path }}/redmine/log:/usr/src/redmine/log"
           - "{{ pod_path }}/redmine/public/themes:/usr/src/redmine/public/themes"
